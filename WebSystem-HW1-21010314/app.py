@@ -69,16 +69,7 @@ def edit_by_id(id):
     todo = Todo.query.get_or_404(id)
     if request.method == 'GET':
         return render_template('edit.html', todo=todo)
-    # elif request.method == 'POST':
-    #     data = request.form
-    #     edit_todo = Todo(
-    #         title=data['title'],
-    #         description=data['description']
-    #     )
-    #     edit_todo.id = id
-    #     db.session.add(edit_todo)
-    #     db.session.commit()
-    #     return redirect(url_for('index'))
+
     elif request.method == 'POST':
         data = request.form
         todo.title = data['title']
@@ -86,6 +77,17 @@ def edit_by_id(id):
         # 데이터베이스에 수정 사항을 저장
         db.session.commit()
         return redirect(url_for('index'))
+
+@app.route('/search', methods=['GET'])
+def search():
+    data = request.args
+    print("search called")
+    word = data['word']
+    if not word:
+        return redirect(url_for('index'))
+    todos = Todo.query.filter(Todo.title.like(f'%{word}%')).all()
+    return render_template('index.html', todos=todos)
+
 
 with app.app_context():
     db.create_all()

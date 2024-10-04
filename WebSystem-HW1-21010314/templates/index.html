@@ -16,13 +16,19 @@
         <!-- 할 일 추가 폼 -->
         <form method="post" action="/add">
             <input type="text" name="title" placeholder="What needs to be done?" required>
-            <!-- Description을 textarea로 변경 -->
             <textarea name="description" placeholder="Add a Description (Optional)" rows="2"></textarea>
             <button type="submit">Add Todo</button>
         </form>
         
         <hr>
         
+        <!-- 찾기 폼 (리스트 위로 이동) -->
+
+        <form method="get" action="/search" class="research-form">
+            <input type="text" name="word" placeholder="Search Keyword . . .">
+            <button type="submit">Search</button>
+        </form>
+
         <!-- 할 일 목록 -->
         <h2>Your Todo List</h2>
         <ul>
