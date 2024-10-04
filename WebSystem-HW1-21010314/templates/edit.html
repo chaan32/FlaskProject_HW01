@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Todo</title>
+    <!-- 기존 스타일과 연동 -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='editstyle.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Edit Todo</h1>
+    </header>
+
+    <main>
+        <!-- 할 일 수정 폼 -->
+        <form method="post" action="/edit/{{ todo.id }}">
+            <input type="text" name="title" value="{{ todo.title }}" placeholder="Edit title" required>
+            <!-- Description을 textarea로 변경 -->
+            <textarea name="description" placeholder="Edit Description" rows="3">{{ todo.description }}</textarea>
+            <button type="submit">Save Changes</button>
+        </form>
+
+        <hr>
+
+        <!-- 돌아가기 링크 -->
+        <div class="back-link">
+            <a href="/">Back to Todo List</a>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Todo App</p>
+    </footer>
+</body>
+</html>
