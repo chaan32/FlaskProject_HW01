@@ -1,71 +1,62 @@
-<!--{% extends "base.html" %}-->
-<!--{% block title %}Todo List - Todo App{% endblock %}-->
-<!--{% block content %}-->
-<!--<h2>Add New Todo</h2>-->
-<!--<form method="post">-->
-<!--    <input type="text" name="todo" required>-->
-<!--    <button type="submit">Add Todo</button>-->
-<!--</form>-->
-
-<!--<h2>Todo List</h2>-->
-<!--{% if todos %}-->
-<!--    <ul>-->
-<!--    {% for todo in todos %}-->
-<!--        <li>-->
-<!--            {{ todo }}-->
-<!--            <a href="{{ url_for('delete', index=loop.index0) }}">Delete</a>-->
-<!--        </li>-->
-<!--    {% endfor %}-->
-<!--    </ul>-->
-<!--{% else %}-->
-<!--    <p>No todos yet. Add some!</p>-->
-<!--{% endif %}-->
-<!--{% endblock %}-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Todo App</title>
-    <link rel="stylesheet" href="/static/style.css">
+    <!-- CSS 파일 연동 -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <div class="container">
-        <h1>Task Manager</h1>
-        <div class="input-section">
-            <input type="text" placeholder="What needs to be done?" id="task-input">
-            <input type="text" placeholder="Add a description (optional)" id="desc-input">
-            <button id="add-btn">Add Task</button>
-        </div>
-        <div class="search-section">
-            <input type="text" placeholder="Search tasks" id="search-input">
-            <button id="search-btn">Search</button>
-        </div>
-        <ul class="todo-list">
-            <li>
-                <input type="checkbox">
-                <span class="task-title">Complete HTML/CSS project</span>
-                <span class="task-desc">Create a responsive layout</span>
-                <div class="actions">
-                    <button class="edit-btn">Edit</button>
-                    <button class="delete-btn">Delete</button>
-                </div>
-            </li>
-            <li>
-                <input type="checkbox">
-                <span class="task-title">Study JavaScript basics</span>
-                <span class="task-desc">Understand ES6 concepts</span>
-                <div class="actions">
-                    <button class="edit-btn">Edit</button>
-                    <button class="delete-btn">Delete</button>
-                </div>
-            </li>
+    <header>
+        <h1>Todo App</h1>
+    </header>
+
+    <main>
+        <!-- 할 일 추가 폼 -->
+        <form method="post" action="/add">
+            <input type="text" name="title" placeholder="What needs to be done?" required>
+            <!-- Description을 textarea로 변경 -->
+            <textarea name="description" placeholder="Add a Description (Optional)" rows="2"></textarea>
+            <button type="submit">Add Todo</button>
+        </form>
+        
+        <hr>
+        
+        <!-- 할 일 목록 -->
+        <h2>Your Todo List</h2>
+        <ul>
+            {% if todos %}
+                {% for todo in todos %}
+                <li class="{% if todo.completed %}completed{% endif %}">
+                    <div class="todo-item">
+                        <input type="checkbox" class="todo-checkbox" {% if todo.completed %}checked{% endif %}>
+                        <div class="todo-details">
+                            <span class="todo-text">{{ todo.title }}</span>
+                            <span class="todo-description">{{ todo.description }}</span>
+                        </div>
+                        <div class="todo-actions">
+                            <a href="/edit/{{ todo.id }}" class="edit-btn">✏️</a>
+                            <a href="/delete/{{ todo.id }}" class="delete-btn">🗑️</a>
+                        </div>
+                    </div>
+                </li>
+                {% endfor %}
+            {% else %}
+                <p>No todos yet. Add some!</p>
+            {% endif %}
         </ul>
+
+        <!-- 페이징 버튼 -->
         <div class="pagination">
-            <button class="page-btn">Previous</button>
-            <span>Page 1 of 2</span>
-            <button class="page-btn">Next</button>
+            <button>Previous</button>
+            <span class="page-number">Page 1 of 1</span>
+            <button>Next</button>
         </div>
-    </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Todo App</p>
+    </footer>
 </body>
 </html>
