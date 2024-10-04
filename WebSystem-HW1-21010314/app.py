@@ -57,8 +57,15 @@ def add():
     db.session.commit()
     return redirect(url_for('index'))
 
+@app.route('/delete/<int:id>')
+def delete_by_id(id):
+    todo = Todo.query.get_or_404(id)
+    db.session.delete(todo)
+    db.session.commit()
+    return redirect(url_for('index'))
+    
 
-# 
+
 with app.app_context():
     db.create_all()
 
