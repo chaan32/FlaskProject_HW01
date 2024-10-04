@@ -64,7 +64,21 @@ def delete_by_id(id):
     db.session.commit()
     return redirect(url_for('index'))
     
-
+@app.route('/edit/<int:id>', methods=['POST','GET'])
+def edit_by_id(id):
+    if request.method == 'GET':
+        todo = Todo.query.get_or_404(id)
+        return render_template('edit.html', todo=todo)
+    elif request.method == 'POST':
+        data = request.form
+        edit_todo = Todo(
+            title=data['title'],
+            description=data['description']
+        )
+        edit_todo.id = id
+        db.session.add(edit_todo)
+        db.session.commit()
+        return redirect(url_for('index'))
 
 with app.app_context():
     db.create_all()
