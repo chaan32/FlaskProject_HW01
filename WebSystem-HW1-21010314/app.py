@@ -37,6 +37,26 @@ def index():
         })
     return render_template('index.html', todos=todos)
 
+@app.route('/add', methods=['POST'])
+def add():
+    print("add called")
+    data = request.form
+
+    if not data or 'title' not in data:
+        return jsonify({'error': 'Title is required'}), 400
+
+    title = data['title']
+    description = data['description']
+
+    new_todo = Todo(
+            title=title,
+            description=description
+            )
+
+    db.session.add(new_todo)
+    db.session.commit()
+    return redirect(url_for('index'))
+
 
 # 
 with app.app_context():
