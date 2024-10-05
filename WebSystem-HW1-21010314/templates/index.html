@@ -6,19 +6,36 @@
     <title>Todo App</title>
     <!-- CSS 파일 연동 -->
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        function toggleComplete(todoId, isChecked) {
-            const xhr = new XMLHttpRequest();
-            xhr.open("POST", `/toggle-complete/${todoId}`, true);
-            xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-            xhr.send(JSON.stringify({ completed: isChecked }));
-    
-            xhr.onload = function() {
-                if (xhr.status !== 200) {
-                    alert("Error updating todo status");
-                }
-            };
-        }
+        $(document).ready(function() {
+            // 체크박스 클릭 이벤트 리스너
+            $('.todo-checkbox').on('change', function() {
+                var todoId = $(this).data('id');  // 체크박스의 데이터 ID 가져오기
+                var completed = $(this).is(':checked');  // 체크박스가 선택된 상태인지 확인
+
+                // AJAX로 서버에 상태 전송
+                $.ajax({
+                    url: '/update_completed/' + todoId,
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ 'completed': completed }),  // JSON 형태로 데이터 전송
+                    success: function(response) {
+                        if (response.success) {
+                            // 상태 업데이트 성공 시 페이지에 스타일 반영
+                            if (completed) {
+                                $(this).closest('li').addClass('completed');  // 완료된 항목에 클래스 추가
+                            } else {
+                                $(this).closest('li').removeClass('completed');  // 완료되지 않은 항목에서 클래스 제거
+                            }
+                        }
+                    }.bind(this),  // this를 바인딩하여 $(this)를 사용할 수 있게 함
+                    error: function() {
+                        alert('Error updating the todo item');
+                    }
+                });
+            });
+        });
     </script>
 </head>
 <body>
@@ -50,9 +67,7 @@
                 {% for todo in todos %}
                 <li class="{% if todo.completed %}completed{% endif %}">
                     <div class="todo-item">
-                        <input type="checkbox" class="todo-checkbox" 
-                               {% if todo.completed %}checked{% endif %} 
-                               onchange="toggleComplete({{ todo.id }}, this.checked)">
+                        <input type="checkbox" class="todo-checkbox" data-id="{{ todo.id }}" {% if todo.completed %}checked{% endif %}>
                         <div class="todo-details">
                             <span class="todo-text">{{ todo.title }}</span>
                             <span class="todo-description">{{ todo.description }}</span>

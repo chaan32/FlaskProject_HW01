@@ -25,7 +25,9 @@ class Todo(db.Model):
 
 @app.route('/')
 def index():
-    tmp = Todo.query.all()
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 7, type=int)
+    tmp = Todo.query.paginate(page=page, per_page=per_page, error_out=False)
     todos = []
     for todo in tmp:
         todos.append({
@@ -35,7 +37,8 @@ def index():
             'completed': todo.completed,
             'created_at': todo.created_at
         })
-    return render_template('index.html', todos=todos)
+    return render_template('index.html', todos=todos, pagination=todos)
+
 
 @app.route('/add', methods=['POST'])
 def add():
@@ -88,6 +91,21 @@ def search():
     todos = Todo.query.filter(Todo.title.like(f'%{word}%')).all()
     return render_template('index.html', todos=todos)
 
+
+@app.route('/update_completed/<int:id>', methods=['POST'])
+def update_completed(id):
+    data = request.get_json()
+    completed = data.get('completed')
+
+    todo = Todo.query.get_or_404(id)
+    todo.completed = completed
+
+    try:
+        db.session.commit()
+        return jsonify({'success': True})
+    except:
+        db.session.rollback()
+        return jsonify({'success': False}), 500
 
 with app.app_context():
     db.create_all()
