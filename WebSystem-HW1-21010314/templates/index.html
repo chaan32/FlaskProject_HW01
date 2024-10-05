@@ -60,7 +60,7 @@
             <button type="submit">Search</button>
         </form>
 
-        <!-- 할 일 목록 -->
+                <!-- 할 일 목록 -->
         <h2>Your Todo List</h2>
         <ul>
             {% if todos %}
@@ -84,11 +84,21 @@
             {% endif %}
         </ul>
 
-        <!-- 페이징 버튼 -->
+        <!-- 페이지네이션 -->
         <div class="pagination">
-            <button>Previous</button>
-            <span class="page-number">Page 1 of 1</span>
-            <button>Next</button>
+            {% if pagination.has_prev %}
+                <a href="{{ url_for('index', page=pagination.prev_num) }}">Previous</a>
+            {% else %}
+                <span>Previous</span>
+            {% endif %}
+
+            <span>Page {{ pagination.page }} of {{ pagination.pages }}</span>
+
+            {% if pagination.has_next %}
+                <a href="{{ url_for('index', page=pagination.next_num) }}">Next</a>
+            {% else %}
+                <span>Next</span>
+            {% endif %}
         </div>
     </main>
 

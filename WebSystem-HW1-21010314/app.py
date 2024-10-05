@@ -23,22 +23,33 @@ class Todo(db.Model):
         return f'<Todo {self.title}>'
 
 
+# @app.route('/')
+# def index():
+#     page = request.args.get('page', 1, type=int)
+#     per_page = request.args.get('per_page', 7, type=int)
+#     tmp = Todo.query.paginate(page=page, per_page=per_page, error_out=False)
+#     todos = []
+#     for todo in tmp:
+#         todos.append({
+#             'id': todo.id,
+#             'title': todo.title,
+#             'description': todo.description,
+#             'completed': todo.completed,
+#             'created_at': todo.created_at
+#         })
+#     return render_template('index.html', todos=todos, pagination=todos)
 @app.route('/')
 def index():
+    # 현재 페이지 번호를 URL에서 가져오고, 기본값은 1로 설정
     page = request.args.get('page', 1, type=int)
-    per_page = request.args.get('per_page', 7, type=int)
-    tmp = Todo.query.paginate(page=page, per_page=per_page, error_out=False)
-    todos = []
-    for todo in tmp:
-        todos.append({
-            'id': todo.id,
-            'title': todo.title,
-            'description': todo.description,
-            'completed': todo.completed,
-            'created_at': todo.created_at
-        })
-    return render_template('index.html', todos=todos, pagination=todos)
+    per_page = 7  # 한 페이지당 표시할 항목 수
 
+    # 페이지네이션을 이용해 할 일 목록 가져오기
+    pagination = Todo.query.paginate(page=page, per_page=per_page, error_out=False)
+    todos = pagination.items  # 현재 페이지에 해당하는 할 일 목록
+
+    # 페이지네이션 정보를 넘겨줌
+    return render_template('index.html', todos=todos, pagination=pagination)
 
 @app.route('/add', methods=['POST'])
 def add():

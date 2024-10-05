@@ -194,7 +194,7 @@ li {
     color: #999;  /* 완료된 항목의 체크 버튼을 회색으로 변경 */
 }
 
-/* 페이지네이션 스타일 */
+페이지네이션 스타일
 .pagination {
     display: flex;
     justify-content: center;
